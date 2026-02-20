@@ -1,156 +1,210 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bloxybob Games</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bloxybob Games</title>
 
-    <style>
-        body {
-            margin: 0;
-            font-family: monospace;
-            background: black;
-            color: white;
-        }
+<style>
+/* ===== GLOBAL ===== */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: black;
+    color: white;
+    overflow-x: hidden;
+}
 
-        /* STARFIELD BACKGROUND */
-        canvas {
-            position: fixed;
-            left: 0;
-            top: 0;
-            z-index: -1;
-        }
+/* ===== STARFIELD ===== */
+#starfield {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
 
-        /* HEADER */
-        .header {
-            width: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 20px 10px;
-            text-align: center;
-            font-size: 32px;
-            font-weight: bold;
-            border-bottom: 2px solid cyan;
-        }
+/* ===== TOP BAR ===== */
+.top-bar {
+    background: rgba(0, 0, 0, 0.7);
+    padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid #222;
+    backdrop-filter: blur(6px);
+}
 
-        /* GAME GRID */
-        .games {
-            width: 90%;
-            max-width: 1200px;
-            margin: 40px auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 25px;
-        }
+/* ===== HERO ===== */
+.hero {
+    text-align: center;
+    padding: 60px 20px;
+}
 
-        /* GAME CARD */
-        .card {
-            background: #111;
-            border: 2px solid #333;
-            border-radius: 5px;
-            padding: 15px;
-            text-align: center;
-            transition: transform 0.15s, border-color 0.15s;
-            cursor: pointer;
-        }
+/* ===== GAME GRID (FIXED) ===== */
+.games {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    padding: 40px;
+    flex-wrap: wrap;
+    transition: all 0.4s ease;
+}
 
-        .card:hover {
-            transform: scale(1.04);
-            border-color: cyan;
-        }
+.game-card {
+    width: 300px; /* Fixed width prevents stretching */
+    background: rgba(20, 20, 20, 0.8);
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s ease, opacity 0.6s ease;
+}
 
-        .card img {
-            width: 100%;
-            height: 160px;
-            object-fit: cover;
-            border-radius: 3px;
-            image-rendering: pixelated;
-        }
+.game-card:hover {
+    transform: scale(1.05);
+}
 
-        .card-title {
-            margin-top: 10px;
-            font-size: 22px;
-            font-weight: bold;
-        }
+button {
+    margin-top: 15px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    background: #00aaff;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+}
 
-        .btn {
-            margin-top: 12px;
-            display: inline-block;
-            padding: 8px 18px;
-            background: cyan;
-            color: black;
-            text-decoration: none;
-            font-weight: bold;
-            border-radius: 3px;
-        }
-    </style>
+button:hover {
+    background: #0088cc;
+}
+
+/* Fade-in animation */
+.fade-in {
+    opacity: 0;
+    animation: fadeIn 0.8s forwards ease;
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+</style>
 </head>
-
 <body>
 
-<canvas id="space"></canvas>
+<canvas id="starfield"></canvas>
 
-<div class="header">Bloxybob Games</div>
+<header class="top-bar">
+    <h1>Bloxybob Games</h1>
+</header>
 
-<!-- GAME SELECT GRID -->
-<div class="games">
+<section class="hero">
+    <h2>Game Projects</h2>
+</section>
 
-    <!-- Block 3D -->
-    <div class="card" onclick="location.href='block3d.html'">
-        <img src="images/block1.png">
-        <div class="card-title">Block 3D</div>
-        <a class="btn" href="block3d.html">View</a>
+<section class="games" id="gameGrid">
+    <div class="game-card">
+        <h3>Block 3D</h3>
+        <p>A 3D block sandbox game.</p>
+        <button onclick="goToGame('block3d.html')">View Game</button>
     </div>
-
-    <!-- Add more game cards here easily -->
-    <!-- Example:
-    <div class="card" onclick="location.href='mygame.html'">
-        <img src="images/mygame.png">
-        <div class="card-title">My Game</div>
-        <a class="btn" href="mygame.html">View</a>
-    </div>
-    -->
-
-</div>
+</section>
 
 <script>
-/* STARFIELD BACKGROUND */
-const c = document.getElementById("space");
-const ctx = c.getContext("2d");
+/* ===== STARFIELD SCRIPT ===== */
 
-function resize() {
-    c.width = window.innerWidth;
-    c.height = window.innerHeight;
-}
-resize();
-window.onresize = resize;
+const canvas = document.getElementById("starfield");
+const ctx = canvas.getContext("2d");
 
 let stars = [];
-for (let i = 0; i < 120; i++) {
-    stars.push({
-        x: Math.random() * c.width,
-        y: Math.random() * c.height,
-        speed: 0.3 + Math.random() * 1,
-        size: Math.random() * 2,
-    });
+const STAR_COUNT = 200;
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 }
 
-function loop() {
-    ctx.fillStyle = "black";
-    ctx.fillRect(0, 0, c.width, c.height);
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
 
-    ctx.fillStyle = "white";
-    stars.forEach(s => {
-        s.y += s.speed;
-        if (s.y > c.height) {
-            s.y = 0;
-            s.x = Math.random() * c.width;
+class Star {
+    constructor() { this.reset(); }
+    reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2;
+        this.speed = Math.random() * 0.6 + 0.2;
+    }
+    update() {
+        this.y += this.speed;
+        if (this.y > canvas.height) {
+            this.reset();
+            this.y = 0;
         }
-        ctx.fillRect(s.x, s.y, s.size, s.size);
-    });
-
-    requestAnimationFrame(loop);
+    }
+    draw() {
+        ctx.fillStyle = "white";
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+    }
 }
-loop();
+
+function initStars() {
+    stars = [];
+    for (let i = 0; i < STAR_COUNT; i++) {
+        stars.push(new Star());
+    }
+}
+
+function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    stars.forEach(star => {
+        star.update();
+        star.draw();
+    });
+    requestAnimationFrame(animate);
+}
+
+initStars();
+animate();
+
+/* ===== NAVIGATION ===== */
+function goToGame(page) {
+    window.location.href = page;
+}
+
+/* ===== SECRET KEY SEQUENCE ===== */
+
+const secretCode = ["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","Enter"];
+let userInput = [];
+
+document.addEventListener("keydown", (e) => {
+    userInput.push(e.key);
+    if (userInput.length > secretCode.length) userInput.shift();
+
+    if (JSON.stringify(userInput) === JSON.stringify(secretCode)) {
+        revealSecretCard();
+    }
+});
+
+function revealSecretCard() {
+    if (document.getElementById("estropolis-card")) return;
+
+    const grid = document.getElementById("gameGrid");
+
+    const card = document.createElement("div");
+    card.className = "game-card fade-in";
+    card.id = "estropolis-card";
+
+    card.innerHTML = `
+        <h3>Estropolis</h3>
+        <p>A Muiltplayer Historical combat project.</p>
+        <button onclick="goToGame('estropolis.html')">View Project</button>
+    `;
+
+    grid.appendChild(card);
+}
 </script>
 
 </body>

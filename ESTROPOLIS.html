@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ESTROPOLIS | Bloxy Games</title>
+
+<style>
+html, body {
+    margin: 0;
+    padding: 0;
+    background: black;
+    color: white;
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
+    scroll-behavior: smooth;
+}
+
+/* ===== HERO SECTION ===== */
+.hero {
+    position: relative;
+    height: 200vh;
+}
+
+/* ===== STATIC BACKGROUND IMAGE ===== */
+#bgImage {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: url("video/Pixel%20City.png") center center / cover no-repeat;
+    z-index: -3;
+}
+
+/* Fade-to-black overlay */
+#videoOverlay {
+    position: fixed;
+    inset: 0;
+    background: black;
+    opacity: 0;
+    pointer-events: none;
+    z-index: -2;
+    transition: opacity 0.15s linear;
+}
+
+/* Cinematic vignette */
+#fadeOverlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+    background:
+        radial-gradient(circle at center,
+            transparent 35%,
+            rgba(0,0,0,0.65) 70%,
+            rgba(0,0,0,0.98) 100%);
+}
+
+/* Scroll Text */
+#scrollHint {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1);
+    z-index: 5;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-size: 24px;
+    transition: transform 0.15s ease-out, opacity 0.15s ease-out;
+    text-shadow: 0 4px 25px rgba(0,0,0,0.85);
+}
+
+/* ===== INFO SECTION ===== */
+.infoSection {
+    position: relative;
+    background: black;
+    padding: 120px 10%;
+    z-index: 10;
+}
+
+.infoSection h2 {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+.infoSection p {
+    font-size: 20px;
+    line-height: 1.7;
+    max-width: 900px;
+    opacity: 0.85;
+}
+</style>
+</head>
+
+<body>
+
+<section class="hero">
+
+    <!-- Static Image Background -->
+    <div id="bgImage"></div>
+
+    <div id="videoOverlay"></div>
+    <div id="fadeOverlay"></div>
+    <div id="scrollHint">Scroll Down</div>
+
+</section>
+
+<section class="infoSection">
+    <h2>About ESTROPOLIS</h2>
+    <p>
+        ESTROPOLIS is a cinematic atmospheric experience built under Bloxybob Games.
+        This section is where you can place your lore, gameplay features, trailers,
+        updates, and more immersive content.
+    </p>
+
+    <p>
+        Add screenshots, feature grids, dev logs, roadmap — anything you want.
+        This area becomes visible only after the cinematic fade completes.
+    </p>
+</section>
+
+<script>
+const overlay = document.getElementById("videoOverlay");
+const hint = document.getElementById("scrollHint");
+
+window.addEventListener("scroll", () => {
+
+    const scrollY = window.scrollY;
+    const maxScroll = window.innerHeight;
+
+    let progress = scrollY / maxScroll;
+    if (progress > 1) progress = 1;
+    if (progress < 0) progress = 0;
+
+    overlay.style.opacity = progress;
+
+    const scale = 1 + (progress * 2.5);
+    hint.style.transform = `translate(-50%, -50%) scale(${scale})`;
+
+    hint.style.opacity = 1 - progress;
+});
+</script>
+
+</body>
+</html>
