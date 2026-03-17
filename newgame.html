@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ORBION | Bloxybob Games</title>
+
+<style>
+
+/* ===== GLOBAL ===== */
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#0b0f14;
+color:#e6e6e6;
+}
+
+#space{
+position:fixed;
+top:0;
+left:0;
+z-index:-1;
+}
+
+/* ===== PAGE ===== */
+.page{
+max-width:1200px;
+margin:auto;
+padding:40px 20px 80px;
+}
+
+.game-title{
+font-size:42px;
+margin-bottom:20px;
+}
+
+/* ===== TRAILER ===== */
+.trailer{
+width:100%;
+height:420px;
+background:#111;
+border-radius:8px;
+overflow:hidden;
+}
+
+.trailer video{
+width:100%;
+height:100%;
+object-fit:cover;
+}
+
+/* ===== THUMBNAILS (future screenshots) ===== */
+.thumbnail-bar{
+margin-top:12px;
+display:flex;
+gap:10px;
+overflow-x:auto;
+scroll-behavior:smooth;
+padding-bottom:6px;
+}
+
+.thumb{
+flex:0 0 auto;
+width:140px;
+height:80px;
+border-radius:4px;
+overflow:hidden;
+opacity:0.6;
+border:2px solid transparent;
+}
+
+.thumb img{
+width:100%;
+height:100%;
+object-fit:cover;
+}
+
+/* ===== LAYOUT ===== */
+.store-layout{
+display:grid;
+grid-template-columns:2fr 1fr;
+gap:40px;
+}
+
+/* ===== DESCRIPTION ===== */
+.description-box{
+background:#121820;
+padding:25px;
+border-radius:8px;
+}
+
+.section-title{
+font-size:22px;
+margin-bottom:12px;
+border-left:4px solid #00aaff;
+padding-left:10px;
+}
+
+/* ===== TAGS ===== */
+.tags{
+margin-top:15px;
+display:flex;
+flex-wrap:wrap;
+gap:8px;
+}
+
+.tag{
+background:#1d2630;
+padding:6px 12px;
+border-radius:20px;
+font-size:13px;
+color:#ccc;
+}
+
+/* ===== SYSTEM REQUIREMENTS ===== */
+.system-req{
+margin-top:30px;
+background:#10151c;
+padding:20px;
+border-radius:8px;
+}
+
+.req-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:20px;
+font-size:14px;
+}
+
+/* ===== SIDE PANEL ===== */
+.side-panel{
+background:#121820;
+padding:25px;
+border-radius:8px;
+height:fit-content;
+position:sticky;
+top:40px;
+}
+
+.meta-item{
+margin-bottom:18px;
+}
+
+.meta-label{
+font-size:13px;
+color:#888;
+}
+
+.meta-value{
+font-size:16px;
+}
+
+/* ===== RATING ===== */
+.rating{
+margin:15px 0;
+font-size:20px;
+color:gold;
+}
+
+/* ===== BUTTON ===== */
+.btn{
+display:block;
+width:100%;
+box-sizing:border-box;
+text-align:center;
+margin-top:20px;
+padding:14px;
+font-size:18px;
+background:#00aaff;
+color:black;
+border-radius:6px;
+text-decoration:none;
+font-weight:bold;
+}
+
+.btn:hover{
+background:#0088cc;
+}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:900px){
+
+.store-layout{
+grid-template-columns:1fr;
+}
+
+.req-grid{
+grid-template-columns:1fr;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<canvas id="space"></canvas>
+
+<div class="page">
+
+<div class="game-title">ORBION</div>
+
+<!-- TRAILER -->
+<div class="trailer">
+
+<video controls autoplay muted loop playsinline poster="images/orbion_poster.png">
+
+<!-- Recommended filename -->
+<source src="orbion_trailer.mp4" type="video/mp4">
+
+</video>
+
+</div>
+
+<div class="thumbnail-bar" id="thumbnailBar"></div>
+
+<div class="store-layout">
+
+<div>
+
+<div class="description-box">
+
+<div class="section-title">About This Game</div>
+
+<p>
+ORBION is a mission-based space exploration game where players control a MEBOT tasked with collecting research data from unknown locations.  
+Inspired by cooperative exploration games like Lethal Company, players must complete missions, gather information, and survive dangerous environments.
+</p>
+
+<div class="tags">
+
+<div class="tag">Space</div>
+<div class="tag">Exploration</div>
+<div class="tag">Co-op</div>
+<div class="tag">Indie</div>
+
+</div>
+
+<br>
+
+<div class="section-title">Reviews</div>
+
+<div class="rating">☆☆☆☆☆</div>
+
+<p>No reviews yet</p>
+
+</div>
+
+<div class="system-req">
+
+<div class="section-title">System Requirements</div>
+
+<div class="req-grid">
+
+<div>
+<strong>Minimum:</strong><br>
+OS: Windows 10<br>
+Processor: Intel i3<br>
+Memory: 4 GB RAM<br>
+Graphics: Integrated GPU<br>
+Storage: 1 GB available space
+</div>
+
+<div>
+<strong>Recommended:</strong><br>
+OS: Windows 11<br>
+Processor: Intel i5<br>
+Memory: 8 GB RAM<br>
+Graphics: GTX 1060<br>
+Storage: 2 GB available space
+</div>
+
+</div>
+</div>
+
+</div>
+
+<div class="side-panel">
+
+<div class="meta-item">
+<div class="meta-label">Release Date</div>
+<div class="meta-value">TBA</div>
+</div>
+
+<div class="meta-item">
+<div class="meta-label">Developer</div>
+<div class="meta-value">Bloxybob Games</div>
+</div>
+
+<div class="meta-item">
+<div class="meta-label">Publisher</div>
+<div class="meta-value">Bloxybob Games Web</div>
+</div>
+
+<div class="meta-item">
+<div class="meta-label">User Rating</div>
+<div class="meta-value">Not Rated</div>
+</div>
+
+<a class="btn">Add to Wishlist</a>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+/* ===== STARFIELD ===== */
+
+const c=document.getElementById("space");
+const ctx=c.getContext("2d");
+
+function resize(){
+c.width=window.innerWidth;
+c.height=window.innerHeight;
+}
+
+resize();
+window.addEventListener("resize",resize);
+
+let stars=[];
+
+for(let i=0;i<150;i++){
+stars.push({
+x:Math.random()*c.width,
+y:Math.random()*c.height,
+speed:0.2+Math.random()*0.6,
+size:Math.random()*1.5
+});
+}
+
+function animate(){
+
+ctx.fillStyle="#0b0f14";
+ctx.fillRect(0,0,c.width,c.height);
+
+ctx.fillStyle="white";
+
+stars.forEach(s=>{
+
+s.y+=s.speed;
+
+if(s.y>c.height){
+s.y=0;
+s.x=Math.random()*c.width;
+}
+
+ctx.fillRect(s.x,s.y,s.size,s.size);
+
+});
+
+requestAnimationFrame(animate);
+
+}
+
+animate();
+
+</script>
+
+</body>
+</html>
