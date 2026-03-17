@@ -8,6 +8,7 @@
 <style>
 
 /* ===== GLOBAL ===== */
+
 body{
 margin:0;
 font-family:Arial,sans-serif;
@@ -23,6 +24,7 @@ z-index:-1;
 }
 
 /* ===== PAGE ===== */
+
 .page{
 max-width:1200px;
 margin:auto;
@@ -34,55 +36,121 @@ font-size:42px;
 margin-bottom:20px;
 }
 
-/* ===== TRAILER ===== */
-.trailer{
+/* ===== VIDEO PLAYER ===== */
+
+.video-player{
+position:relative;
 width:100%;
-height:420px;
-background:#111;
-border-radius:8px;
+background:black;
+border-radius:12px;
 overflow:hidden;
 }
 
-.trailer video{
+.video-player video{
 width:100%;
-height:100%;
-object-fit:cover;
+height:auto;
+max-height:70vh;
+object-fit:contain;
+display:block;
 }
 
-/* ===== THUMBNAILS (future screenshots) ===== */
-.thumbnail-bar{
-margin-top:12px;
+/* ===== GLASS CONTROLS ===== */
+
+.controls{
+
+position:absolute;
+bottom:15px;
+left:50%;
+transform:translateX(-50%);
+
 display:flex;
+flex-direction:column;
 gap:10px;
-overflow-x:auto;
-scroll-behavior:smooth;
-padding-bottom:6px;
+
+width:90%;
+
+background:rgba(255,255,255,0.08);
+backdrop-filter:blur(18px);
+-webkit-backdrop-filter:blur(18px);
+
+border:1px solid rgba(255,255,255,0.15);
+border-radius:14px;
+
+padding:12px;
+
+box-shadow:0 10px 30px rgba(0,0,0,0.6);
+
+opacity:1;
+transition:opacity 0.4s ease;
+
 }
 
-.thumb{
-flex:0 0 auto;
-width:140px;
-height:80px;
-border-radius:4px;
-overflow:hidden;
-opacity:0.6;
-border:2px solid transparent;
+.controls.hidden{
+opacity:0;
+pointer-events:none;
 }
 
-.thumb img{
+.progress{
 width:100%;
+height:6px;
+background:rgba(255,255,255,0.2);
+border-radius:4px;
+cursor:pointer;
+}
+
+.progress-filled{
+width:0%;
 height:100%;
-object-fit:cover;
+background:#00aaff;
+border-radius:4px;
+}
+
+.control-row{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:10px;
+}
+
+button{
+
+background:rgba(255,255,255,0.15);
+border:1px solid rgba(255,255,255,0.2);
+color:white;
+
+padding:6px 12px;
+border-radius:8px;
+
+cursor:pointer;
+font-weight:bold;
+
+backdrop-filter:blur(10px);
+}
+
+button:hover{
+background:rgba(255,255,255,0.25);
+}
+
+.volume{
+width:120px;
+}
+
+.time{
+font-size:14px;
+color:#ddd;
+min-width:110px;
+text-align:center;
 }
 
 /* ===== LAYOUT ===== */
+
 .store-layout{
 display:grid;
 grid-template-columns:2fr 1fr;
 gap:40px;
+margin-top:30px;
 }
 
-/* ===== DESCRIPTION ===== */
 .description-box{
 background:#121820;
 padding:25px;
@@ -96,7 +164,6 @@ border-left:4px solid #00aaff;
 padding-left:10px;
 }
 
-/* ===== TAGS ===== */
 .tags{
 margin-top:15px;
 display:flex;
@@ -109,10 +176,8 @@ background:#1d2630;
 padding:6px 12px;
 border-radius:20px;
 font-size:13px;
-color:#ccc;
 }
 
-/* ===== SYSTEM REQUIREMENTS ===== */
 .system-req{
 margin-top:30px;
 background:#10151c;
@@ -127,7 +192,6 @@ gap:20px;
 font-size:14px;
 }
 
-/* ===== SIDE PANEL ===== */
 .side-panel{
 background:#121820;
 padding:25px;
@@ -146,22 +210,8 @@ font-size:13px;
 color:#888;
 }
 
-.meta-value{
-font-size:16px;
-}
-
-/* ===== RATING ===== */
-.rating{
-margin:15px 0;
-font-size:20px;
-color:gold;
-}
-
-/* ===== BUTTON ===== */
 .btn{
 display:block;
-width:100%;
-box-sizing:border-box;
 text-align:center;
 margin-top:20px;
 padding:14px;
@@ -173,11 +223,6 @@ text-decoration:none;
 font-weight:bold;
 }
 
-.btn:hover{
-background:#0088cc;
-}
-
-/* ===== RESPONSIVE ===== */
 @media(max-width:900px){
 
 .store-layout{
@@ -201,19 +246,34 @@ grid-template-columns:1fr;
 
 <div class="game-title">ORBION</div>
 
-<!-- TRAILER -->
-<div class="trailer">
+<div class="video-player" id="player">
 
-<video controls autoplay muted loop playsinline poster="images/orbion_poster.png">
-
-<!-- Recommended filename -->
-<source src="orbion_trailer.mp4" type="video/mp4">
-
+<video id="video">
+<source src="videos/orbion%20trailer.mp4" type="video/mp4">
 </video>
+
+<div class="controls" id="controls">
+
+<div class="progress" id="progress">
+<div class="progress-filled" id="progressFilled"></div>
+</div>
+
+<div class="control-row">
+
+<button id="playBtn">▶</button>
+
+<div class="time" id="timeDisplay">0:00 / 0:00</div>
+
+<input type="range" class="volume" id="volume" min="0" max="1" step="0.01" value="1">
+
+<button id="fullscreen">⛶</button>
 
 </div>
 
-<div class="thumbnail-bar" id="thumbnailBar"></div>
+</div>
+
+</div>
+
 
 <div class="store-layout">
 
@@ -224,26 +284,20 @@ grid-template-columns:1fr;
 <div class="section-title">About This Game</div>
 
 <p>
-ORBION is a mission-based space exploration game where players control a MEBOT tasked with collecting research data from unknown locations.  
-Inspired by cooperative exploration games like Lethal Company, players must complete missions, gather information, and survive dangerous environments.
+ORBION is a mission-based space exploration game where players control a MEBOT tasked with collecting research data from unknown locations. Inspired by Lethal Company.
 </p>
 
 <div class="tags">
 
 <div class="tag">Space</div>
 <div class="tag">Exploration</div>
-<div class="tag">Co-op</div>
+<div class="tag">Multiplayer</div>
 <div class="tag">Indie</div>
+<div class="tag">2D</div>
+<div class="tag">Singleplayer</div>
+<div class="tag">Puzzles</div>
 
 </div>
-
-<br>
-
-<div class="section-title">Reviews</div>
-
-<div class="rating">☆☆☆☆☆</div>
-
-<p>No reviews yet</p>
 
 </div>
 
@@ -276,26 +330,27 @@ Storage: 2 GB available space
 
 </div>
 
+
 <div class="side-panel">
 
 <div class="meta-item">
 <div class="meta-label">Release Date</div>
-<div class="meta-value">TBA</div>
+<div>TBA</div>
+</div>
+
+<div class="meta-item">
+<div class="meta-label">Original Development Date</div>
+<div>March 2026</div>
 </div>
 
 <div class="meta-item">
 <div class="meta-label">Developer</div>
-<div class="meta-value">Bloxybob Games</div>
+<div>Bloxybob Games</div>
 </div>
 
 <div class="meta-item">
 <div class="meta-label">Publisher</div>
-<div class="meta-value">Bloxybob Games Web</div>
-</div>
-
-<div class="meta-item">
-<div class="meta-label">User Rating</div>
-<div class="meta-value">Not Rated</div>
+<div>Bloxybob Games Web</div>
 </div>
 
 <a class="btn">Add to Wishlist</a>
@@ -307,6 +362,81 @@ Storage: 2 GB available space
 </div>
 
 <script>
+
+/* ===== VIDEO PLAYER ===== */
+
+const player=document.getElementById("player");
+const video=document.getElementById("video");
+const playBtn=document.getElementById("playBtn");
+const volume=document.getElementById("volume");
+const progress=document.getElementById("progress");
+const progressFilled=document.getElementById("progressFilled");
+const fullscreen=document.getElementById("fullscreen");
+const controls=document.getElementById("controls");
+const timeDisplay=document.getElementById("timeDisplay");
+
+let hideTimer;
+
+playBtn.onclick=()=>{
+
+if(video.paused){
+video.play();
+playBtn.textContent="❚❚";
+}else{
+video.pause();
+playBtn.textContent="▶";
+}
+
+};
+
+volume.oninput=()=>{
+video.volume=volume.value;
+};
+
+video.addEventListener("timeupdate",()=>{
+
+const percent=(video.currentTime/video.duration)*100;
+progressFilled.style.width=percent+"%";
+
+timeDisplay.textContent=
+formatTime(video.currentTime)+" / "+formatTime(video.duration);
+
+});
+
+progress.onclick=(e)=>{
+
+const rect=progress.getBoundingClientRect();
+const pos=(e.clientX-rect.left)/rect.width;
+video.currentTime=pos*video.duration;
+
+};
+
+fullscreen.onclick=()=>{
+video.requestFullscreen();
+};
+
+function formatTime(sec){
+
+if(!sec) return "0:00";
+
+const m=Math.floor(sec/60);
+const s=Math.floor(sec%60);
+
+return m+":"+(s<10?"0"+s:s);
+
+}
+
+player.addEventListener("mousemove",()=>{
+
+controls.classList.remove("hidden");
+
+clearTimeout(hideTimer);
+
+hideTimer=setTimeout(()=>{
+controls.classList.add("hidden");
+},2000);
+
+});
 
 /* ===== STARFIELD ===== */
 
