@@ -56,19 +56,22 @@ html, body {
             rgba(0,0,0,0.98) 100%);
 }
 
-/* Scroll Text */
+/* ===== RICKROLL GIF ===== */
 #scrollHint {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) scale(1);
     z-index: 5;
-    font-weight: 700;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    font-size: 24px;
     transition: transform 0.15s ease-out, opacity 0.15s ease-out;
-    text-shadow: 0 4px 25px rgba(0,0,0,0.85);
+    pointer-events: none;
+}
+
+#scrollHint img {
+    width: 220px;
+    max-width: 40vw;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.8);
 }
 
 /* ===== INFO SECTION ===== */
@@ -97,12 +100,15 @@ html, body {
 
 <section class="hero">
 
-    <!-- Static Image Background -->
     <div id="bgImage"></div>
 
     <div id="videoOverlay"></div>
     <div id="fadeOverlay"></div>
-    <div id="scrollHint">Scroll Down</div>
+
+    <!-- RICKROLL GIF -->
+    <div id="scrollHint">
+        <img src="https://media.tenor.com/x8v1oNUOmg4AAAAd/rickroll-rick.gif">
+    </div>
 
 </section>
 
