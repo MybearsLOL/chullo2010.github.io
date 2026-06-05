@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ORBION 2D | Bloxybob Games</title>
+
+<style>
+/* ===== GLOBAL ===== */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0b0f14;
+    color: #e6e6e6;
+}
+
+#space {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+/* ===== PAGE ===== */
+.page {
+    max-width: 1200px;
+    margin: auto;
+    padding: 40px 20px 80px;
+}
+
+.game-title {
+    font-size: 42px;
+    margin-bottom: 20px;
+}
+
+/* ===== PREVIEW ===== */
+.preview-wrapper {
+    position: relative;
+}
+
+.carousel {
+    position: relative;
+    width: 100%;
+    height: 420px;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #111;
+}
+
+.carousel img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.carousel img.active {
+    opacity: 1;
+}
+
+/* ===== ARROWS ===== */
+.arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 38px;
+    cursor: pointer;
+    padding: 8px 14px;
+    background: rgba(0,0,0,0.5);
+    border-radius: 4px;
+    user-select: none;
+    z-index: 5;
+}
+
+.arrow.left { left: 15px; }
+.arrow.right { right: 15px; }
+
+/* ===== THUMBNAILS ===== */
+.thumbnail-bar {
+    margin-top: 12px;
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding-bottom: 6px;
+}
+
+.thumbnail-bar::-webkit-scrollbar { height: 6px; }
+.thumbnail-bar::-webkit-scrollbar-thumb { background: #444; border-radius: 4px; }
+
+.thumb {
+    flex: 0 0 auto;
+    width: 140px;
+    height: 80px;
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: pointer;
+    opacity: 0.6;
+    border: 2px solid transparent;
+    transition: 0.2s ease;
+}
+
+.thumb img { width: 100%; height: 100%; object-fit: cover; }
+.thumb.active { opacity: 1; border-color: #00aaff; }
+
+/* ===== LAYOUT ===== */
+.store-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 40px;
+    margin-top: 30px;
+}
+
+/* ===== DESCRIPTION ===== */
+.description-box {
+    background: #121820;
+    padding: 25px;
+    border-radius: 8px;
+}
+
+.section-title {
+    font-size: 22px;
+    margin-bottom: 12px;
+    border-left: 4px solid #00aaff;
+    padding-left: 10px;
+}
+
+/* ===== TAGS ===== */
+.tags {
+    margin-top: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.tag {
+    background: #1d2630;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    color: #ccc;
+}
+
+/* ===== SYSTEM REQUIREMENTS ===== */
+.system-req {
+    margin-top: 30px;
+    background: #10151c;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.req-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    font-size: 14px;
+}
+
+/* ===== SIDE PANEL ===== */
+.side-panel {
+    background: #121820;
+    padding: 25px;
+    border-radius: 8px;
+    height: fit-content;
+    position: sticky;
+    top: 40px;
+}
+
+.meta-item { margin-bottom: 18px; }
+.meta-label { font-size: 13px; color: #888; }
+.meta-value { font-size: 16px; }
+
+/* ===== RATING ===== */
+.rating { margin: 15px 0; font-size: 20px; color: gold; }
+
+/* ===== BUTTON ===== */
+.btn {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+    margin-top: 20px;
+    padding: 14px;
+    font-size: 18px;
+    background: #44a4db;
+    color: rgb(0,0,0);
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background 0.3s ease;
+}
+
+.btn:hover { background: #51bbf8; }
+
+/* ===== UPDATES SECTION ===== */
+.updates-section {
+    margin-top: 30px;
+    background: #10151c;
+    padding: 20px 25px;
+    border-radius: 8px;
+}
+
+/* Date header above a group */
+.update-date-header {
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+    color: #888;
+    text-transform: uppercase;
+    padding: 8px 0 10px;
+    border-bottom: 1px solid #1e2830;
+    margin-bottom: 0;
+}
+
+/* Individual update card */
+.update-card {
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+    padding: 14px 0;
+    border-bottom: 1px solid #1a2028;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    border-radius: 4px;
+}
+
+.update-card:last-of-type { border-bottom: none; }
+
+.update-card:hover { background: #161d26; padding-left: 6px; padding-right: 6px; margin: 0 -6px; }
+
+.update-thumb {
+    flex: 0 0 220px;
+    height: 124px;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #0d1117;
+}
+
+.update-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Placeholder when no image supplied */
+.update-thumb-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #1a2535, #0d1520);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    color: #2a3a50;
+}
+
+.update-info { flex: 1; min-width: 0; }
+
+/* Badge */
+.update-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 3px;
+    margin-bottom: 7px;
+}
+
+.badge-major   { background: #1a4a7a; color: #5bc8ff; border: 1px solid #2a6aaa; }
+.badge-regular { background: #162a1a; color: #4adf7a; border: 1px solid #1e4a28; }
+.badge-bugfix  { background: #3a2000; color: #ffaa33; border: 1px solid #6a3a00; }
+
+.update-title {
+    font-size: 17px;
+    font-weight: bold;
+    color: #e8edf2;
+    margin-bottom: 7px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.update-desc {
+    font-size: 13px;
+    color: #8a9aaa;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* ===== MODAL OVERLAY ===== */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal-overlay.open { display: flex; }
+
+.modal-box {
+    background: #121820;
+    border-radius: 10px;
+    max-width: 780px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+    position: relative;
+    animation: modalIn 0.2s ease;
+}
+
+@keyframes modalIn {
+    from { opacity: 0; transform: scale(0.95) translateY(10px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.modal-img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 10px 10px 0 0;
+    display: block;
+}
+
+.modal-img-placeholder {
+    width: 100%;
+    height: 300px;
+    border-radius: 10px 10px 0 0;
+    background: linear-gradient(135deg, #1a2535, #0d1520);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 60px;
+    color: #2a3a50;
+}
+
+.modal-body { padding: 25px 30px 30px; }
+
+.modal-badge { margin-bottom: 10px; }
+
+.modal-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #e8edf2;
+    margin-bottom: 6px;
+}
+
+.modal-date {
+    font-size: 12px;
+    color: #556;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+}
+
+.modal-description {
+    font-size: 15px;
+    color: #aab5c0;
+    line-height: 1.7;
+    white-space: pre-line;
+}
+
+.modal-close {
+    position: absolute;
+    top: 14px;
+    right: 18px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #aaa;
+    background: rgba(0,0,0,0.5);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s, background 0.2s;
+    z-index: 10;
+}
+
+.modal-close:hover { color: white; background: rgba(0,0,0,0.8); }
+
+/* ===== RESPONSIVE ===== */
+@media(max-width: 900px){
+    .store-layout { grid-template-columns: 1fr; }
+    .req-grid { grid-template-columns: 1fr; }
+    .update-thumb { flex: 0 0 120px; height: 68px; }
+}
+
+@media(max-width: 600px){
+    .update-card { flex-direction: column; }
+    .update-thumb { flex: none; width: 100%; height: 160px; }
+}
+</style>
+</head>
+
+<body>
+<canvas id="space"></canvas>
+
+<div class="page">
+
+<div class="game-title">ORBION 2D</div>
+
+<!-- PREVIEW -->
+<div class="preview-wrapper">
+    <div class="carousel" id="carousel">
+        <div class="arrow left" id="leftArrow">&#10094;</div>
+        <div class="arrow right" id="rightArrow">&#10095;</div>
+    </div>
+    <div class="thumbnail-bar" id="thumbnailBar"></div>
+</div>
+
+<div class="store-layout">
+
+<div>
+    <div class="description-box">
+        <div class="section-title">About This Game</div>
+        <p>
+        ORBION 2D is a planetary exploration and survival game where players travel
+        between worlds, gather resources, complete missions, and uncover the secrets
+        of deep space.
+        </p>
+
+        <div class="tags">
+            <div class="tag">2D</div>
+            <div class="tag">Space</div>
+            <div class="tag">Exploration</div>
+            <div class="tag">Survival</div>
+            <div class="tag">Sandbox</div>
+            <div class="tag">Indie</div>
+        </div>
+
+        <br>
+
+        <div class="section-title">Reviews</div>
+        <div class="rating">★★★★☆</div>
+        <p>Very Positive (Prototype Feedback)</p>
+    </div>
+
+    <div class="system-req">
+        <div class="section-title">System Requirements</div>
+        <div class="req-grid">
+            <div>
+                <strong>Minimum:</strong><br>
+                OS: Windows 10<br>
+                Processor: Intel i3<br>
+                Memory: 4 GB RAM<br>
+                Graphics: Integrated GPU<br>
+                Storage: 1 GB available space
+            </div>
+            <div>
+                <strong>Recommended:</strong><br>
+                OS: Windows 11<br>
+                Processor: Intel i5<br>
+                Memory: 8 GB RAM<br>
+                Graphics: GTX 1060 or better<br>
+                Storage: 2 GB available space
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== UPDATES SECTION ===== -->
+    <div class="updates-section">
+        <div class="section-title">Updates &amp; News</div>
+        <div id="updatesContainer"></div>
+    </div>
+</div>
+
+<div class="side-panel">
+    <div class="meta-item">
+        <div class="meta-label">Release Date</div>
+        <div class="meta-value">To Be Announced</div>
+    </div>
+
+    <div class="meta-item">
+        <div class="meta-label">Original Development Date</div>
+        <div>June 1 2026</div>
+    </div>
+
+    <div class="meta-item">
+        <div class="meta-label">Developer</div>
+        <div class="meta-value">Bloxybob Games</div>
+    </div>
+
+    <div class="meta-item">
+        <div class="meta-label">Publisher</div>
+        <div class="meta-value">Bloxybob Games Web</div>
+    </div>
+
+    <div class="meta-item">
+        <div class="meta-label">User Rating</div>
+        <div class="meta-value">4.5 / 5</div>
+    </div>
+
+    <a class="btn">Add to Wishlist</a>
+</div>
+
+</div>
+</div>
+
+<!-- ===== MODAL ===== -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal-box" id="modalBox">
+        <div class="modal-close" id="modalClose">&#10005;</div>
+        <div id="modalImgWrap"></div>
+        <div class="modal-body">
+            <div class="modal-badge" id="modalBadge"></div>
+            <div class="modal-title" id="modalTitle"></div>
+            <div class="modal-date" id="modalDate"></div>
+            <div class="modal-description" id="modalDesc"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+/* ===== STARFIELD ===== */
+const c = document.getElementById("space");
+const ctx = c.getContext("2d");
+function resize(){ c.width = window.innerWidth; c.height = window.innerHeight; }
+resize(); window.addEventListener("resize", resize);
+let stars = [];
+for(let i = 0; i < 150; i++){
+    stars.push({ x: Math.random()*c.width, y: Math.random()*c.height, speed: 0.2+Math.random()*0.6, size: Math.random()*1.5 });
+}
+function animateStars(){
+    ctx.fillStyle = "#0b0f14";
+    ctx.fillRect(0, 0, c.width, c.height);
+    ctx.fillStyle = "white";
+    stars.forEach(s => {
+        s.y += s.speed;
+        if(s.y > c.height){ s.y = 0; s.x = Math.random()*c.width; }
+        ctx.fillRect(s.x, s.y, s.size, s.size);
+    });
+    requestAnimationFrame(animateStars);
+}
+animateStars();
+
+/* ===== CAROUSEL ===== */
+const imageList = [
+    "images/block1.png",
+    "images/block2.png",
+    "images/banner.png",
+    "images/block3.png",
+    "images/block4.png",
+    "images/block5.png",
+    "images/block6.png"
+];
+
+const carousel = document.getElementById("carousel");
+const thumbnailBar = document.getElementById("thumbnailBar");
+let carouselImages = [];
+let carouselIndex = 0;
+let autoSlide;
+
+function createImageEl(src){
+    return new Promise(resolve => {
+        const img = new Image();
+        img.src = src;
+        img.onload = () => resolve(img);
+        img.onerror = () => resolve(null);
+    });
+}
+
+async function initGallery(){
+    for(let src of imageList){
+        let img = await createImageEl(src);
+        if(img){
+            img.classList.add("carousel-img");
+            carousel.appendChild(img);
+            carouselImages.push(img);
+
+            const thumb = document.createElement("div");
+            thumb.classList.add("thumb");
+            const tImg = document.createElement("img");
+            tImg.src = src;
+            thumb.appendChild(tImg);
+            thumbnailBar.appendChild(thumb);
+            thumb.addEventListener("click", () => showSlide(carouselImages.indexOf(img)));
+        }
+    }
+    if(carouselImages.length > 0) showSlide(0);
+    autoSlide = setInterval(() => showSlide(carouselIndex + 1), 5000);
+}
+
+function showSlide(n){
+    if(carouselImages.length === 0) return;
+    carouselImages[carouselIndex].classList.remove("active");
+    thumbnailBar.children[carouselIndex].classList.remove("active");
+    carouselIndex = (n + carouselImages.length) % carouselImages.length;
+    carouselImages[carouselIndex].classList.add("active");
+    thumbnailBar.children[carouselIndex].classList.add("active");
+}
+
+document.getElementById("leftArrow").onclick = () => showSlide(carouselIndex - 1);
+document.getElementById("rightArrow").onclick = () => showSlide(carouselIndex + 1);
+carousel.addEventListener("wheel", e => { if(e.deltaY > 0) showSlide(carouselIndex + 1); else showSlide(carouselIndex - 1); });
+thumbnailBar.addEventListener("wheel", e => { e.preventDefault(); thumbnailBar.scrollLeft += e.deltaY; });
+
+initGallery();
+
+
+/* ===================================================
+   ===== UPDATES SYSTEM — EDIT THIS ARRAY TO ADD POSTS =====
+   
+   type: "major"   → blue badge   "MAJOR UPDATE"
+   type: "regular" → green badge  "REGULAR UPDATE"
+   type: "bugfix"  → orange badge "BUG FIX"
+   
+   image: path to your image, e.g. "images/update1.png"
+          leave as "" for a placeholder icon
+   
+   description: full text shown in the popup (supports newlines)
+   =================================================== */
+const updates = [
+    {
+        type: "major",
+        title: "Update 2.1 — Planets & Settings",
+        date: "JUNE 4 2026",
+        image: "images/Update 2.1.png",
+        shortDesc: "A lot of new Systems added to the game, including Planets and a Freecam mode!",
+        description: `ORBION 2D has received a major update with many new features and improvements:\n\n• Added procedurally generated Planet \n• Implemented a Better Gravity system that works across the Camera, Player, and Planet\n• Added Time Wrap System\n• Added a Camera System for Freecam and Player camera\n\nThis is just the beginning of the Jetpack System with more content and features is the coming in the future as we continue development!`
+    },
+    {
+        type: "regular",
+        title: "Update 0.8 — Basic Functions",
+        date: "JUNE 3 2026",
+        image: "images/Update 0.8.png",
+        shortDesc: "Game been worked on so check these new features added!",
+        description: `ORBION 2D has received a major update with many new features and improvements:\n\n• Added basic Player mechanics and sprites\n• Implemented a Gravity system (so the Player doesn't fall)\n• Made a Space Shader showing off muiltple star types and a blinking system with it\n\nThis is just the beginning expect more content and features in the coming months as we continue development!`
+    },
+    {
+        type: "regular",
+        title: "ORBION 2D Goes Into development!",
+        date: "JUNE 1 2026",
+        image: "images/Update 0.1.png",
+        shortDesc: "The game is now in active development!",
+        description: `ORBION 2D is now in development for the first time!\n\nThe game is currectly beign worked by 1 devloper, and is in a very early stage. Expect very rough builds and lots of missing features.`
+    }
+];
+
+
+/* ===== RENDER UPDATES ===== */
+function badgeHTML(type){
+    const map = {
+        major:   { cls: "badge-major",   label: "Major Update" },
+        regular: { cls: "badge-regular", label: "Regular Update" },
+        bugfix:  { cls: "badge-bugfix",  label: "Bug Fix" }
+    };
+    const b = map[type] || map.regular;
+    return `<span class="update-badge ${b.cls}">${b.label}</span>`;
+}
+
+function renderUpdates(){
+    const container = document.getElementById("updatesContainer");
+    container.innerHTML = "";
+
+    // Group by date
+    const groups = {};
+    updates.forEach(u => {
+        if(!groups[u.date]) groups[u.date] = [];
+        groups[u.date].push(u);
+    });
+
+    Object.keys(groups).forEach(date => {
+        const dateHeader = document.createElement("div");
+        dateHeader.className = "update-date-header";
+        dateHeader.textContent = date;
+        container.appendChild(dateHeader);
+
+        groups[date].forEach(u => {
+            const card = document.createElement("div");
+            card.className = "update-card";
+            card.innerHTML = `
+                <div class="update-thumb">
+                    ${u.image
+                        ? `<img src="${u.image}" alt="${u.title}">`
+                        : `<div class="update-thumb-placeholder">${u.type === 'major' ? '🚀' : u.type === 'bugfix' ? '🔧' : '📦'}</div>`
+                    }
+                </div>
+                <div class="update-info">
+                    ${badgeHTML(u.type)}
+                    <div class="update-title">${u.title}</div>
+                    <div class="update-desc">${u.shortDesc}</div>
+                </div>
+            `;
+            card.addEventListener("click", () => openModal(u));
+            container.appendChild(card);
+        });
+    });
+}
+
+/* ===== MODAL ===== */
+function openModal(u){
+    document.getElementById("modalImgWrap").innerHTML = u.image
+        ? `<img class="modal-img" src="${u.image}" alt="${u.title}">`
+        : `<div class="modal-img-placeholder">${u.type === 'major' ? '🚀' : u.type === 'bugfix' ? '🔧' : '📦'}</div>`;
+
+    document.getElementById("modalBadge").innerHTML = badgeHTML(u.type);
+    document.getElementById("modalTitle").textContent = u.title;
+    document.getElementById("modalDate").textContent = u.date;
+    document.getElementById("modalDesc").textContent = u.description;
+    document.getElementById("modalOverlay").classList.add("open");
+    document.body.style.overflow = "hidden";
+}
+
+function closeModal(){
+    document.getElementById("modalOverlay").classList.remove("open");
+    document.body.style.overflow = "";
+}
+
+document.getElementById("modalClose").addEventListener("click", closeModal);
+document.getElementById("modalOverlay").addEventListener("click", e => {
+    if(e.target === document.getElementById("modalOverlay")) closeModal();
+});
+document.addEventListener("keydown", e => { if(e.key === "Escape") closeModal(); });
+
+renderUpdates();
+</script>
+
+</body>
+</html>
