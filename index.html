@@ -4,427 +4,675 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bloxybob Games</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 
 <style>
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ===== GLOBAL ===== */
-body{
-    margin:0;
-    font-family:"Segoe UI",Arial,sans-serif;
-    background:#0b0f14;
-    color:#e6e6e6;
-    overflow-x:hidden;
+:root {
+    --bg:        #0b0f14;
+    --surface:   #141920;
+    --surface2:  #1a2130;
+    --border:    #1f2d3d;
+    --accent:    #00aaff;
+    --accent2:   #0077cc;
+    --text:      #c8d6e0;
+    --muted:     #6a7f8f;
+    --gold:      #f0b429;
+    --header-h:  58px;
 }
 
-a{
-    text-decoration:none;
-    color:inherit;
+body {
+    margin: 0;
+    font-family: "Inter", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
 }
+
+a { text-decoration: none; color: inherit; }
 
 /* ===== STARFIELD ===== */
-#starfield{
-    position:fixed;
-    top:0;
-    left:0;
-    z-index:-1;
+#starfield {
+    position: fixed;
+    top: 0; left: 0;
+    z-index: -1;
+    pointer-events: none;
 }
 
 /* ===== HEADER ===== */
-.main-header{
-    background:#171a21;
-    border-bottom:1px solid #1f2933;
-    padding:14px 40px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
+.main-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: var(--header-h);
+    background: rgba(10, 14, 20, 0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
 }
 
-.logo{
-    font-size:22px;
-    font-weight:bold;
-    color:#66c0f4;
+.logo {
+    font-family: "Rajdhani", sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--accent);
+    text-transform: uppercase;
 }
 
-.nav{
-    display:flex;
-    gap:25px;
-    font-size:14px;
-    color:#c7d5e0;
+.nav { display: flex; gap: 6px; }
+
+.nav-link {
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 4px;
+    color: var(--text);
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    letter-spacing: 0.3px;
 }
 
-.nav span{
-    cursor:pointer;
-    transition:0.2s;
+.nav-link:hover { background: var(--surface2); color: white; }
+.nav-link.active { color: var(--accent); }
+
+/* ===== MAIN CONTENT ===== */
+.page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 36px 30px 80px;
 }
 
-.nav span:hover{
-    color:white;
-}
-
-/* ===== STORE SECTION ===== */
-.section{
-    max-width:1200px;
-    margin:auto;
-    padding:40px;
-}
-
-.section h2{
-    font-size:24px;
-    margin-bottom:25px;
+/* ===== SECTION LABEL ===== */
+.section-label {
+    font-family: "Rajdhani", sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
 }
 
 /* ===== FEATURED GAME ===== */
-.featured-game{
-    background:#171a21;
-    border-radius:10px;
-    overflow:hidden;
-    margin-bottom:50px;
-    box-shadow:0 15px 35px rgba(0,0,0,0.6);
+.featured-wrap { margin-bottom: 50px; }
+
+.featured-shell {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.55);
 }
 
-.featured-preview{
-    position:relative;
-    height:350px;
-    overflow:hidden;
+.featured-slides {
+    position: relative;
+    height: 370px;
+    overflow: hidden;
+    background: #000;
 }
 
-.featured-preview img{
-    position:absolute;
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    opacity:0;
-    transition:opacity 0.6s ease;
+.featured-slides img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.7s ease;
 }
 
-.featured-preview img.active{
-    opacity:1;
+.featured-slides img.active { opacity: 1; }
+
+.slide-dots {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 6px;
+    z-index: 5;
 }
 
-.featured-info{
-    padding:25px;
+.dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.3);
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
 }
 
-.featured-info h3{
-    margin:0 0 10px 0;
-    font-size:28px;
+.dot.active { background: var(--accent); transform: scale(1.3); }
+
+.featured-sidebar {
+    display: flex;
+    flex-direction: column;
+    padding: 28px 24px;
+    border-left: 1px solid var(--border);
+    justify-content: space-between;
 }
 
-.featured-info p{
-    color:#aaa;
-    margin-bottom:20px;
+.featured-sidebar-info {
+    transition: opacity 0.4s ease;
 }
 
-.featured-info button{
-    padding:12px 28px;
-    font-size:16px;
-    border:none;
-    border-radius:4px;
-    background:#66c0f4;
-    color:black;
-    font-weight:bold;
-    cursor:pointer;
-    transition:0.3s;
+.featured-sidebar-info.fading {
+    opacity: 0;
 }
 
-.featured-info button:hover{
-    background:#4aa3d8;
+/* Featured switcher dots */
+.featured-switcher {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.switcher-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.switcher-dot.active {
+    background: var(--accent);
+    transform: scale(1.2);
+}
+
+.featured-game-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent2);
+    background: rgba(0,170,255,0.08);
+    padding: 3px 9px;
+    border-radius: 3px;
+    margin-bottom: 12px;
+    width: fit-content;
+}
+
+.featured-title {
+    font-family: "Rajdhani", sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: #e8f0f6;
+    line-height: 1.1;
+    margin-bottom: 10px;
+}
+
+.featured-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 18px;
+}
+
+.featured-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 22px;
+}
+
+.chip {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 3px;
+    background: var(--surface2);
+    color: #8aaabb;
+    border: 1px solid var(--border);
+}
+
+.featured-meta {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-bottom: 20px;
+}
+
+.featured-meta span { color: var(--text); }
+
+.btn-primary {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 12px;
+    background: var(--accent);
+    color: #000;
+    font-family: "Rajdhani", sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+}
+
+.btn-primary:hover { background: #22bbff; transform: translateY(-1px); }
+
+/* ===== DIVIDER ===== */
+.divider {
+    height: 1px;
+    background: var(--border);
+    margin: 0 0 36px;
 }
 
 /* ===== GAME GRID ===== */
-.games{
-    display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
-    gap:25px;
+.grid-label-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 18px;
 }
 
-.game-card{
-    background:#171a21;
-    border-radius:8px;
-    overflow:hidden;
-    transition:transform 0.25s ease,box-shadow 0.25s ease;
-    cursor:pointer;
+.game-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 18px;
 }
 
-.game-card:hover{
-    transform:translateY(-6px);
-    box-shadow:0 10px 25px rgba(0,0,0,0.6);
+/* Card */
+.game-card {
+    background: var(--surface);
+    border-radius: 7px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+    display: flex;
+    flex-direction: column;
 }
 
-.game-image{
-    height:150px;
-    background-size:cover;
-    background-position:center;
+.game-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.55);
+    border-color: #2a3d50;
 }
 
-.game-info{
-    padding:15px;
+.card-img {
+    height: 145px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    flex-shrink: 0;
 }
 
-.game-info h3{
-    margin:0 0 8px 0;
+.card-ribbon {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    padding: 3px 10px 3px 8px;
+    border-radius: 0 3px 3px 0;
 }
 
-.game-info p{
-    font-size:13px;
-    color:#aaa;
-    margin-bottom:12px;
+.ribbon-active    { background: #1a5c2a; color: #4adf7a; }
+.ribbon-cancelled { background: #5c1a1a; color: #ff6a6a; }
+.ribbon-tba       { background: #1a3a5c; color: #5bc8ff; }
+
+.card-body { padding: 14px 16px 18px; flex: 1; display: flex; flex-direction: column; }
+
+.card-title {
+    font-family: "Rajdhani", sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: #ddeaf2;
+    margin-bottom: 6px;
 }
 
-.game-info button{
-    padding:8px 16px;
-    border:none;
-    border-radius:4px;
-    background:#66c0f4;
-    color:black;
-    font-weight:bold;
-    cursor:pointer;
+.card-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+    flex: 1;
+    margin-bottom: 14px;
 }
 
-.game-info button:hover{
-    background:#4aa3d8;
+.card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.card-rating { font-size: 11px; color: var(--gold); letter-spacing: 0.5px; }
+
+.btn-card {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    background: var(--accent2);
+    color: white;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-card:hover { background: var(--accent); }
+
+/* ===== SECRET CARD ===== */
+@keyframes cardReveal {
+    from { opacity: 0; transform: scale(0.9) translateY(10px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.game-card.secret-reveal {
+    animation: cardReveal 0.4s ease forwards;
+    border-color: #4a2a70;
+    box-shadow: 0 0 20px rgba(120,60,200,0.3);
 }
 
 /* ===== RESPONSIVE ===== */
-@media(max-width:768px){
-.section{padding:20px;}
-.featured-preview{height:250px;}
+@media(max-width: 860px){
+    .featured-shell { grid-template-columns: 1fr; }
+    .featured-slides { height: 260px; }
+    .featured-sidebar { border-left: none; border-top: 1px solid var(--border); }
+    .main-header { padding: 0 20px; }
+    .page { padding: 24px 16px 60px; }
 }
 
+@media(max-width: 500px){
+    .nav-link { padding: 6px 9px; font-size: 12px; }
+    .game-grid { grid-template-columns: 1fr 1fr; }
+}
 </style>
 </head>
 
 <body>
-
 <canvas id="starfield"></canvas>
 
+<!-- HEADER -->
 <header class="main-header">
-<div class="logo">Bloxybob Games</div>
-
-<div class="nav">
-<span>Store</span>
-<span>Library</span>
-<span>Community</span>
-<span>About</span>
-</div>
-
+    <div class="logo">Bloxybob Games</div>
+    <nav class="nav">
+        <span class="nav-link active">Store</span>
+        <span class="nav-link">Library</span>
+        <span class="nav-link">Community</span>
+        <span class="nav-link">About</span>
+    </nav>
 </header>
 
+<div class="page">
 
-<section class="section">
+    <!-- FEATURED -->
+    <div class="featured-wrap">
+        <div class="section-label">Featured &amp; Recommended</div>
+        <div class="featured-shell">
 
-<h2>Featured Game</h2>
+            <div class="featured-slides" id="featuredSlides">
+                <div class="slide-dots" id="slideDots"></div>
+            </div>
 
-<div class="featured-game">
+            <div class="featured-sidebar">
+                <div class="featured-sidebar-info" id="featuredSidebarInfo">
+                    <div class="featured-switcher" id="featuredSwitcher"></div>
+                    <div class="featured-game-tag">Featured Game</div>
+                    <div class="featured-title" id="featuredTitle"></div>
+                    <div class="featured-desc" id="featuredDesc"></div>
+                    <div class="featured-tags" id="featuredTagsEl" style="margin-bottom:22px;"></div>
+                    <div class="featured-meta" id="featuredMeta"></div>
+                </div>
+                <button class="btn-primary" id="featuredBtn">View Game Page</button>
+            </div>
 
-<div class="featured-preview" id="featuredPreview">
-<img src="images/block1.png" class="active">
-<img src="images/block2.png">
-<img src="images/banner.png">
-</div>
+        </div>
+    </div>
 
-<div class="featured-info">
-<h3>Block 3D</h3>
-<p>3D Sandbox Building Experience focused on creativity and experimentation.</p>
-<button onclick="goToGame('block3d.html')">View Game</button>
-</div>
+    <div class="divider"></div>
 
-</div>
+    <!-- ALL PROJECTS -->
+    <div class="grid-label-row">
+        <div class="section-label" style="margin-bottom:0">All Projects</div>
+    </div>
 
+    <div class="game-grid" id="gameGrid">
 
-<h2>More Projects</h2>
+        <div class="game-card" onclick="goToGame('orbion2d.html')">
+            <div class="card-img" style="background-image:url('images/banner orbion.png');">
+                <div class="card-ribbon ribbon-active">In Development</div>
+            </div>
+            <div class="card-body">
+                <div class="card-title">ORBION 2D</div>
+                <div class="card-desc">2D planetary exploration with a Story mode and Multiplayer Revolution.</div>
+                <div class="card-footer">
+                    <div class="card-rating">★★★★☆</div>
+                    <button class="btn-card">View</button>
+                </div>
+            </div>
+        </div>
 
-<div class="games" id="gameGrid">
+        <div class="game-card" onclick="goToGame('block3d.html')">
+            <div class="card-img" style="background-image:url('images/banner.png');">
+                <div class="card-ribbon ribbon-cancelled">Cancelled</div>
+            </div>
+            <div class="card-body">
+                <div class="card-title">Block 3D</div>
+                <div class="card-desc">3D Sandbox Building Experience set in a stylized retro universe.</div>
+                <div class="card-footer">
+                    <div class="card-rating">★★★★☆</div>
+                    <button class="btn-card">View</button>
+                </div>
+            </div>
+        </div>
 
-<!-- ORBION 2D -->
-<div class="game-card">
-    <div class="game-image" style="background-image:url('images/orbion2d.png');"></div>
+        <div class="game-card" onclick="goToGame('newgame.html')">
+            <div class="card-img" style="background-image:url('images/newgame.png');">
+                <div class="card-ribbon ribbon-tba">Coming Soon</div>
+            </div>
+            <div class="card-body">
+                <div class="card-title">ORBION</div>
+                <div class="card-desc">A mission-based space exploration game.</div>
+                <div class="card-footer">
+                    <div class="card-rating">—</div>
+                    <button class="btn-card">View</button>
+                </div>
+            </div>
+        </div>
 
-    <div class="game-info">
-        <h3>ORBION 2D</h3>
-        <p>2D planetary exploration game including a Story mode and Multiplayer Revolution.</p>
-        <button onclick="goToGame('orbion2d.html')">View Game</button>
     </div>
 </div>
 
-<!-- BLOCK 3D -->
-<div class="game-card">
-<div class="game-image" style="background-image:url('images/banner.png');"></div>
-
-<div class="game-info">
-<h3>Block 3D</h3>
-<p>3D Sandbox Building Experience</p>
-<button onclick="goToGame('block3d.html')">View Game</button>
-</div>
-</div>
-
-
-<!-- NEW GAME -->
-<div class="game-card">
-<div class="game-image" style="background-image:url('images/newgame.png');"></div>
-
-<div class="game-info">
-<h3>ORBION</h3>
-<p>A mission based space exploration game</p>
-<button onclick="goToGame('newgame.html')">View Game</button>
-</div>
-</div>
-
-
-</div>
-
-</section>
-
 
 <script>
-
 /* ===== STARFIELD ===== */
+const canvas = document.getElementById("starfield");
+const ctx    = canvas.getContext("2d");
+let stars    = [];
 
-const canvas=document.getElementById("starfield");
-const ctx=canvas.getContext("2d");
-
-let stars=[];
-const STAR_COUNT=200;
-
-function resizeCanvas(){
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
-}
-
-window.addEventListener("resize",resizeCanvas);
+function resizeCanvas(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 
-class Star{
-
-constructor(){this.reset();}
-
-reset(){
-this.x=Math.random()*canvas.width;
-this.y=Math.random()*canvas.height;
-this.size=Math.random()*2;
-this.speed=Math.random()*0.6+0.2;
+class Star {
+    constructor(){ this.reset(true); }
+    reset(rand){
+        this.x     = Math.random() * canvas.width;
+        this.y     = rand ? Math.random() * canvas.height : 0;
+        this.size  = Math.random() * 1.6;
+        this.speed = Math.random() * 0.5 + 0.15;
+        this.alpha = Math.random() * 0.6 + 0.3;
+    }
+    update(){ this.y += this.speed; if(this.y > canvas.height) this.reset(false); }
+    draw(){
+        ctx.globalAlpha = this.alpha;
+        ctx.fillStyle   = "white";
+        ctx.fillRect(this.x, this.y, this.size, this.size);
+    }
 }
 
-update(){
-this.y+=this.speed;
+for(let i = 0; i < 220; i++) stars.push(new Star());
 
-if(this.y>canvas.height){
-this.reset();
-this.y=0;
+function animateStars(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    stars.forEach(s => { s.update(); s.draw(); });
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(animateStars);
 }
-}
+animateStars();
 
-draw(){
-ctx.fillStyle="white";
-ctx.beginPath();
-ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
-ctx.fill();
-}
-
-}
-
-function initStars(){
-stars=[];
-for(let i=0;i<STAR_COUNT;i++){
-stars.push(new Star());
-}
-}
-
-function animate(){
-ctx.clearRect(0,0,canvas.width,canvas.height);
-
-stars.forEach(star=>{
-star.update();
-star.draw();
-});
-
-requestAnimationFrame(animate);
-}
-
-initStars();
-animate();
-
-
-/* ===== FEATURED SLIDESHOW ===== */
-
-const featuredImgs=document.querySelectorAll("#featuredPreview img");
-let fIndex=0;
-
-function showFeatured(n){
-
-featuredImgs[fIndex].classList.remove("active");
-
-fIndex=(n+featuredImgs.length)%featuredImgs.length;
-
-featuredImgs[fIndex].classList.add("active");
-
-}
-
-setInterval(()=>{
-showFeatured(fIndex+1);
-},5000);
-
-
-/* ===== NAVIGATION ===== */
-
-function goToGame(page){
-window.location.href=page;
-}
-
-
-/* ===== SECRET ESTROPOLIS CODE ===== */
-
-const secretCode=[
-"ArrowUp",
-"ArrowDown",
-"ArrowLeft",
-"ArrowRight",
-"Enter"
+/* ===== FEATURED GAMES DATA ===== */
+const featuredGames = [
+    {
+        title:  "Block 3D",
+        desc:   "3D Sandbox Building Experience focused on creativity and experimentation in a stylized retro universe.",
+        tags:   ["Sandbox","Building","3D","Creative","Indie"],
+        dev:    "Bloxybob Games",
+        release:"TBA",
+        page:   "block3d.html",
+        images: ["images/block1.png","images/block2.png","images/banner.png"]
+    },
+    {
+        title:  "ORBION 2D",
+        desc:   "2D planetary exploration with a Story mode and Multiplayer Revolution across hand-crafted worlds.",
+        tags:   ["2D","Space","Exploration","Survival","Indie"],
+        dev:    "Bloxybob Games",
+        release:"TBA",
+        page:   "orbion2d.html",
+        images: ["images/banner orbion.png","images/block1.png","images/block2.png"]
+    }
 ];
 
-let userInput=[];
+const featuredSlides   = document.getElementById("featuredSlides");
+const dotsContainer    = document.getElementById("slideDots");
+const sidebarInfo      = document.getElementById("featuredSidebarInfo");
+const switcher         = document.getElementById("featuredSwitcher");
+const featuredBtn      = document.getElementById("featuredBtn");
 
-document.addEventListener("keydown",(e)=>{
+let fGameIndex  = 0;   // which featured game is showing
+let fSlideIndex = 0;   // which slide within that game
+let slideImgEls = [];
+let slideTimer  = null;
+let gameTimer   = null;
 
-userInput.push(e.key);
-
-if(userInput.length>secretCode.length)
-userInput.shift();
-
-if(JSON.stringify(userInput)===JSON.stringify(secretCode)){
-revealSecretCard();
-}
-
+/* Build switcher dots (one per featured game) */
+featuredGames.forEach((_, i) => {
+    const d = document.createElement("div");
+    d.className = "switcher-dot" + (i === 0 ? " active" : "");
+    d.addEventListener("click", () => switchFeaturedGame(i));
+    switcher.appendChild(d);
 });
 
+function buildSlides(game){
+    /* Remove old img elements (leave slideDots div) */
+    slideImgEls.forEach(el => el.remove());
+    slideImgEls = [];
+    fSlideIndex = 0;
 
-function revealSecretCard(){
+    /* Remove old slide dots */
+    dotsContainer.innerHTML = "";
 
-if(document.getElementById("estropolis-card"))
-return;
+    game.images.forEach((src, i) => {
+        const img = document.createElement("img");
+        img.src = src;
+        img.alt = "";
+        if(i === 0) img.classList.add("active");
+        featuredSlides.insertBefore(img, dotsContainer);
+        slideImgEls.push(img);
 
-const grid=document.getElementById("gameGrid");
-
-const card=document.createElement("div");
-card.className="game-card";
-card.id="estropolis-card";
-
-card.innerHTML=`
-
-<div class="game-image" style="background-image:url('images/estropolis.png');"></div>
-
-<div class="game-info">
-<h3>Estropolis</h3>
-<p>Multiplayer Historical Combat Project</p>
-<button onclick="goToGame('estropolis.html')">View Project</button>
-</div>
-
-`;
-
-grid.appendChild(card);
-
+        const d = document.createElement("div");
+        d.className = "dot" + (i === 0 ? " active" : "");
+        d.addEventListener("click", () => showSlide(i));
+        dotsContainer.appendChild(d);
+    });
 }
 
+function showSlide(n){
+    if(!slideImgEls.length) return;
+    slideImgEls[fSlideIndex].classList.remove("active");
+    dotsContainer.children[fSlideIndex].classList.remove("active");
+    fSlideIndex = (n + slideImgEls.length) % slideImgEls.length;
+    slideImgEls[fSlideIndex].classList.add("active");
+    dotsContainer.children[fSlideIndex].classList.add("active");
+}
+
+function updateSidebar(game){
+    sidebarInfo.classList.add("fading");
+    setTimeout(() => {
+        document.getElementById("featuredTitle").textContent = game.title;
+        document.getElementById("featuredDesc").textContent  = game.desc;
+        document.getElementById("featuredMeta").innerHTML    =
+            `Developer: <span>${game.dev}</span><br>Release: <span>${game.release}</span>`;
+        const tagsEl = document.getElementById("featuredTagsEl");
+        tagsEl.innerHTML = game.tags.map(t => `<span class="chip">${t}</span>`).join("");
+        featuredBtn.onclick = () => goToGame(game.page);
+        sidebarInfo.classList.remove("fading");
+    }, 200);
+}
+
+function switchFeaturedGame(idx){
+    /* Update switcher dots */
+    switcher.children[fGameIndex].classList.remove("active");
+    fGameIndex = (idx + featuredGames.length) % featuredGames.length;
+    switcher.children[fGameIndex].classList.add("active");
+
+    const game = featuredGames[fGameIndex];
+    buildSlides(game);
+    updateSidebar(game);
+
+    /* Reset slide auto-timer */
+    clearInterval(slideTimer);
+    slideTimer = setInterval(() => showSlide(fSlideIndex + 1), 5000);
+}
+
+/* Init with first game */
+switchFeaturedGame(0);
+
+/* Auto-rotate featured game every 12 seconds */
+gameTimer = setInterval(() => switchFeaturedGame(fGameIndex + 1), 12000);
+
+/* ===== NAVIGATION ===== */
+function goToGame(page){ window.location.href = page; }
+
+/* ===== SECRET ESTROPOLIS CODE ===== */
+const secretCode = ["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","Enter"];
+let userInput = [];
+
+document.addEventListener("keydown", e => {
+    userInput.push(e.key);
+    if(userInput.length > secretCode.length) userInput.shift();
+    if(JSON.stringify(userInput) === JSON.stringify(secretCode)) revealSecretCard();
+});
+
+function revealSecretCard(){
+    if(document.getElementById("estropolis-card")) return;
+    const grid = document.getElementById("gameGrid");
+    const card = document.createElement("div");
+    card.className = "game-card secret-reveal";
+    card.id = "estropolis-card";
+    card.onclick = () => goToGame("estropolis.html");
+    card.innerHTML = `
+        <div class="card-img" style="background-image:url('images/estropolis.png');">
+            <div class="card-ribbon ribbon-tba">Secret</div>
+        </div>
+        <div class="card-body">
+            <div class="card-title">Estropolis</div>
+            <div class="card-desc">Multiplayer Historical Combat Project.</div>
+            <div class="card-footer">
+                <div class="card-rating">—</div>
+                <button class="btn-card">View</button>
+            </div>
+        </div>
+    `;
+    grid.appendChild(card);
+}
 </script>
 
 </body>
